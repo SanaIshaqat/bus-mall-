@@ -1,8 +1,5 @@
 'use strict';
 
-
-
-
 let imgArr = ['bag.jpg', 'banana.jpg', 'bathroom.jpg', 'boots.jpg', 'breakfast.jpg', 'bubblegum.jpg',
     'chair.jpg', 'cthulhu.jpg', 'dog-duck.jpg', 'dragon.jpg', 'pen.jpg', 'pet-sweep.jpg', 'scissors.jpg',
     'shark.jpg', 'sweep.png', 'tauntaun.jpg', 'unicorn.jpg', 'water-can.jpg', 'wine-glass.jpg'
@@ -15,12 +12,18 @@ let leftRandom;
 let centerRandom;
 let rightRandom;
 
+
+let imgNameArr = [];
+let clickArr = [];
+let shownArr = [];
+
+
 const imgSection = document.getElementById('imgSection');
 let leftImg = document.getElementById('leftImg');
 let centerImg = document.getElementById('centerImg');
 let rightImg = document.getElementById('rightImg');
-let finalresults=document.getElementById("finalresults");
-
+// let finalresults = document.getElementById("finalresults");
+// let results=document.getElementById('results').style.visibility = 'hidden';
 
 function Display(name, imgSrc) {
     this.name = name;
@@ -44,8 +47,14 @@ console.log(Display.allArr);
 
 function render() {
     leftRandom = getRandomNumber(0, imgArr.length - 1);
-    centerRandom = getRandomNumber(0, imgArr.length - 1);
-    rightRandom = getRandomNumber(0, imgArr.length - 1);
+    let centerRandom;
+    let rightRandom;
+
+    do {
+        centerRandom = getRandomNumber(0, imgArr.length - 1);
+        rightRandom = getRandomNumber(0, imgArr.length - 1);
+    }
+    while (leftRandom === centerRandom || rightRandom === centerRandom || rightRandom === leftRandom);
 
     leftImg.src = './img/' + Display.allArr[leftRandom].img;
     centerImg.src = './img/' + Display.allArr[centerRandom].img;
@@ -73,15 +82,23 @@ function clickResponse(event) {
             Display.allArr[centerRandom].clicks++;
         }
         else if (event.target.id = 'rightImg') {
-
-
             Display.allArr[rightRandom].clicks++;
-            
         }
+        else {
+            imgSection.removeEventListener('click', clickResponse);
+        }
+
         render();
         count++;
     }
+    else if (count >= roundsNo) {
+        results.addEventListener('click', resultResponse);
+        function resultResponse(e) {
 
+            chartValues();
+            renderRes();
+        }
+    }
     // imgSection.removeEventListener('click', clickResponse);
 }
 function getRandomNumber(min, max) {
@@ -101,9 +118,52 @@ function renderRes() {
         ol1.appendChild(li);
     }
 }
-results.addEventListener('click', resultResponse);
-function resultResponse(e) {
-    renderRes();
+
+
+function chartValues() {
+
+    for (let i = 0; i < Display.allArr.length; i++) {
+
+        imgNameArr.push(Display.allArr[i].name);
+        clickArr.push(Display.allArr[i].clicks);
+        shownArr.push(Display.allArr[i].shown);
+
+    }
+    console.log(imgNameArr);
+    console.log(clickArr);
+    console.log(shownArr);
+
+
+    let ctx = document.getElementById('myChart').getContext('2d');
+    var myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: imgNameArr,
+            datasets: [{
+                label: 'No. Clicks',
+                data: clickArr,
+                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                borderColor: ['rgba(54, 162, 235, 1)'],
+                borderWidth: 2
+            },
+            {
+                label: 'No. Shown times',
+                data: shownArr,
+                backgroundColor: 'rgba(255, 206, 86, 0.2)',
+                borderColor: ['rgba(255, 206, 86, 1)'],
+                borderWidth: 2
+            }]
+        },
+        options: {
+            scales: {
+                yAxes: [{
+                    stacked: false,
+                    ticks: {
+                        min: 0,
+                        stepSize: 1,
+                    }
+                }]
+            }
+        }
+    });
 }
-// results.removeEventListener('click', resultResponse);
-// imgSection.removeEventListener('click', clickResponse);
