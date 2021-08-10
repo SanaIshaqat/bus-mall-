@@ -1,3 +1,5 @@
+
+
 'use strict';
 
 let imgArr = ['bag.jpg', 'banana.jpg', 'bathroom.jpg', 'boots.jpg', 'breakfast.jpg', 'bubblegum.jpg',
@@ -20,11 +22,11 @@ let leftImg = document.getElementById('leftImg');
 let centerImg = document.getElementById('centerImg');
 let rightImg = document.getElementById('rightImg');
 
-function Display(name, imgSrc) {
+function Display(name, imgSrc, show = 0, clic = 0) {
     this.name = name;
     this.img = imgSrc;
-    this.shown = 0;
-    this.clicks = 0;
+    this.shown = show;
+    this.clicks = clic;
 
     Display.allArr.push(this);
 }
@@ -32,7 +34,10 @@ function Display(name, imgSrc) {
 Display.allArr = [];
 getData();
 
+function getRandomNumber(min, max) {
+    return Math.floor(Math.random() * (max - min + 1) + min);
 
+}
 // for (let i = 0; i < imgArr.length; i++) {
 //     new Display(imgArr[i].split('.')[0], imgArr[i]);
 // }
@@ -42,7 +47,7 @@ console.log(Display.allArr);
 
 let prevRandomArr = [];
 function render() {
-    
+
 
     do {
         leftRandom = getRandomNumber(0, imgArr.length - 1);
@@ -68,7 +73,7 @@ function render() {
     Display.allArr[rightRandom].shown++;
 
     localStorage.data = JSON.stringify(Display.allArr);
-    console.log(Display.allArr);
+    // console.log(Display.allArr);
 
 }
 render();
@@ -90,31 +95,25 @@ function clickResponse(event) {
         else if (event.target.id = 'rightImg') {
             Display.allArr[rightRandom].clicks++;
         }
-        else {
-            imgSection.removeEventListener('click', clickResponse);
-        }
 
-        render();
-        count++;
     }
     else if (count >= roundsNo) {
         results.addEventListener('click', resultResponse);
         function resultResponse(e) {
-
-            
-            chartValues();
             renderRes();
+
+            chartValues();
         }
+        imgSection.removeEventListener('click', clickResponse);
     }
-}
-
-function getRandomNumber(min, max) {
-    return Math.floor(Math.random() * (max - min + 1) + min);
+    render();
+    count++;
 
 }
+
+//
 
 function renderRes() {
-
     let ol1 = document.createElement('ol');
     finalresults.appendChild(ol1);
 
@@ -128,10 +127,10 @@ function renderRes() {
 
 
 function chartValues() {
-    
-let imgNameArr = [];
-let clickArr = [];
-let shownArr = [];
+
+    let imgNameArr = [];
+    let clickArr = [];
+    let shownArr = [];
 
     for (let i = 0; i < Display.allArr.length; i++) {
 
@@ -179,17 +178,17 @@ let shownArr = [];
     });
 }
 
-function getData(){
+function getData() {
 
-if (localStorage.data){
-    let data =JSON.parse(localStorage.data);
-    for(let i =0 ; i< data.length; i++){
-        new Display( data[i].name,data[i].img,data[i].shown,data[i].clicks );    
+    if (localStorage.data) {
+        let data = JSON.parse(localStorage.data);
+        for (let i = 0; i < data.length; i++) {
+            new Display(data[i].name, data[i].img, data[i].shown, data[i].clicks);
+        }
     }
-}
-    else{
-        for (let i=0 ;i<imgArr.length; i++){
-            new Display(imgArr[i].split('.')[0],imgArr[i]);
-        } 
+    else {
+        for (let i = 0; i < imgArr.length; i++) {
+            new Display(imgArr[i].split('.')[0], imgArr[i]);
+        }
     }
 }
