@@ -22,8 +22,6 @@ const imgSection = document.getElementById('imgSection');
 let leftImg = document.getElementById('leftImg');
 let centerImg = document.getElementById('centerImg');
 let rightImg = document.getElementById('rightImg');
-// let finalresults = document.getElementById("finalresults");
-// let results=document.getElementById('results').style.visibility = 'hidden';
 
 function Display(name, imgSrc) {
     this.name = name;
@@ -36,25 +34,38 @@ function Display(name, imgSrc) {
 
 Display.allArr = [];
 
-for (let i = 0; i < imgArr.length; i++) {
-    new Display(imgArr[i].split('.')[0], imgArr[i]);
-}
+getLocalData();
 
-console.log(Display.allArr);
+// for (let i = 0; i < imgArr.length; i++) {
+//     new Display(imgArr[i].split('.')[0], imgArr[i]);
+// }
+
+// console.log(Display.allArr);
 
 
-
-
+// let leftRandom;
+// let centerRandom;
+// let rightRandom;
+let prevRandomArr = [];
 function render() {
-    leftRandom = getRandomNumber(0, imgArr.length - 1);
-    let centerRandom;
-    let rightRandom;
+    // leftRandom = getRandomNumber(0, imgArr.length - 1);
+    // let centerRandom;
+    // let rightRandom;
 
     do {
+        leftRandom = getRandomNumber(0, imgArr.length - 1);
         centerRandom = getRandomNumber(0, imgArr.length - 1);
         rightRandom = getRandomNumber(0, imgArr.length - 1);
     }
-    while (leftRandom === centerRandom || rightRandom === centerRandom || rightRandom === leftRandom);
+    while (leftRandom === centerRandom ||
+    rightRandom === centerRandom ||
+    rightRandom === leftRandom ||
+    prevRandomArr.includes(leftRandom) ||
+    prevRandomArr.includes(centerRandom) ||
+        prevRandomArr.includes(rightRandom)
+    );
+
+    prevRandomArr = [leftRandom, centerRandom, rightRandom];
 
     leftImg.src = './img/' + Display.allArr[leftRandom].img;
     centerImg.src = './img/' + Display.allArr[centerRandom].img;
@@ -64,9 +75,12 @@ function render() {
     Display.allArr[centerRandom].shown++;
     Display.allArr[rightRandom].shown++;
 
+    localStorage.data=JSON.stringify(Display.allArr);
+    console.log(Display.allArr);
+
 }
 render();
-console.log(Display.allArr);
+// console.log(Display.allArr);
 
 
 
@@ -100,7 +114,10 @@ function clickResponse(event) {
         }
     }
     // imgSection.removeEventListener('click', clickResponse);
+
+
 }
+
 function getRandomNumber(min, max) {
     return Math.floor(Math.random() * (max - min + 1) + min);
 
@@ -129,9 +146,9 @@ function chartValues() {
         shownArr.push(Display.allArr[i].shown);
 
     }
-    console.log(imgNameArr);
-    console.log(clickArr);
-    console.log(shownArr);
+    // console.log(imgNameArr);
+    // console.log(clickArr);
+    // console.log(shownArr);
 
 
     let ctx = document.getElementById('myChart').getContext('2d');
@@ -166,4 +183,19 @@ function chartValues() {
             }
         }
     });
+}
+
+function getLocalData(){
+
+if (localStorage.data){
+    let data =JSON.parse(localStorage.data);
+    for(let i =0;i<data.length;i++){
+        new Display(data[i].name,data[i].img,data[i].shown,data[i].clicks);    
+    }
+}
+    else{
+        for (let i=0;i<imgArr.length;i++){
+            new Display(imgArr[i].split('.')[0],imgArr[i]);
+        } 
+    }
 }
