@@ -13,9 +13,6 @@ let centerRandom;
 let rightRandom;
 
 
-let imgNameArr = [];
-let clickArr = [];
-let shownArr = [];
 
 
 const imgSection = document.getElementById('imgSection');
@@ -33,24 +30,19 @@ function Display(name, imgSrc) {
 }
 
 Display.allArr = [];
+getData();
 
-getLocalData();
 
 // for (let i = 0; i < imgArr.length; i++) {
 //     new Display(imgArr[i].split('.')[0], imgArr[i]);
 // }
 
-// console.log(Display.allArr);
+console.log(Display.allArr);
 
 
-// let leftRandom;
-// let centerRandom;
-// let rightRandom;
 let prevRandomArr = [];
 function render() {
-    // leftRandom = getRandomNumber(0, imgArr.length - 1);
-    // let centerRandom;
-    // let rightRandom;
+    
 
     do {
         leftRandom = getRandomNumber(0, imgArr.length - 1);
@@ -75,12 +67,12 @@ function render() {
     Display.allArr[centerRandom].shown++;
     Display.allArr[rightRandom].shown++;
 
-    localStorage.data=JSON.stringify(Display.allArr);
+    localStorage.data = JSON.stringify(Display.allArr);
     console.log(Display.allArr);
 
 }
 render();
-// console.log(Display.allArr);
+console.log(Display.allArr);
 
 
 
@@ -109,13 +101,11 @@ function clickResponse(event) {
         results.addEventListener('click', resultResponse);
         function resultResponse(e) {
 
+            
             chartValues();
             renderRes();
         }
     }
-    // imgSection.removeEventListener('click', clickResponse);
-
-
 }
 
 function getRandomNumber(min, max) {
@@ -138,6 +128,10 @@ function renderRes() {
 
 
 function chartValues() {
+    
+let imgNameArr = [];
+let clickArr = [];
+let shownArr = [];
 
     for (let i = 0; i < Display.allArr.length; i++) {
 
@@ -146,9 +140,9 @@ function chartValues() {
         shownArr.push(Display.allArr[i].shown);
 
     }
-    // console.log(imgNameArr);
-    // console.log(clickArr);
-    // console.log(shownArr);
+    console.log(imgNameArr);
+    console.log(clickArr);
+    console.log(shownArr);
 
 
     let ctx = document.getElementById('myChart').getContext('2d');
@@ -185,16 +179,16 @@ function chartValues() {
     });
 }
 
-function getLocalData(){
+function getData(){
 
 if (localStorage.data){
     let data =JSON.parse(localStorage.data);
-    for(let i =0;i<data.length;i++){
-        new Display(data[i].name,data[i].img,data[i].shown,data[i].clicks);    
+    for(let i =0 ; i< data.length; i++){
+        new Display( data[i].name,data[i].img,data[i].shown,data[i].clicks );    
     }
 }
     else{
-        for (let i=0;i<imgArr.length;i++){
+        for (let i=0 ;i<imgArr.length; i++){
             new Display(imgArr[i].split('.')[0],imgArr[i]);
         } 
     }
